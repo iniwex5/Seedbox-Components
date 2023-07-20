@@ -32,6 +32,8 @@ function qBittorrent_download {
             *) warn_1; echo "Please choose a valid version"; normal_3;;
         esac
     done
+    ## Check System Architecture
+    ARCH=$(uname -m)
     if [[ $ARCH == x86_64 ]]; then
         wget https://raw.githubusercontent.com/iniwex5/Seedbox-Components/main/Torrent%20Clients/qBittorrent/qBittorrent/qBittorrent%20$qBver%20-%20$libver/qbittorrent-nox && chmod +x $HOME/qbittorrent-nox
         wget  https://raw.githubusercontent.com/iniwex5/Seedbox-Components/main/Torrent%20Clients/qBittorrent/qb_password_gen && chmod +x $HOME/qb_password_gen
