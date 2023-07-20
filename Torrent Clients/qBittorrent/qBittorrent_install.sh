@@ -33,14 +33,15 @@ function qBittorrent_download {
         esac
     done
     ## Check System Architecture
-    ARCH=$(uname -m)
-    if [[ $ARCH == x86_64 ]]; then
+    systemARCH=$(uname -m)
+    if [[ $systemARCH == x86_64 ]]; then
         wget https://raw.githubusercontent.com/iniwex5/Seedbox-Components/main/Torrent%20Clients/qBittorrent/qBittorrent/qBittorrent%20$qBver%20-%20$libver/qbittorrent-nox && chmod +x $HOME/qbittorrent-nox
-        wget  https://raw.githubusercontent.com/iniwex5/Seedbox-Components/main/Torrent%20Clients/qBittorrent/qb_password_gen && chmod +x $HOME/qb_password_gen
-    elif [[ $ARCH == aarch64 ]]; then
+        wget https://raw.githubusercontent.com/iniwex5/Seedbox-Components/main/Torrent%20Clients/qBittorrent/qb_password_gen && chmod +x $HOME/qb_password_gen
+    elif [[ $systemARCH == aarch64 ]]; then
         wget -O qbittorrent-nox https://raw.githubusercontent.com/iniwex5/Seedbox-Components/main/Torrent%20Clients/qBittorrent/qBittorrent/qBittorrent%20$qBver%20-%20$libver/aarch64-qbittorrent-nox && chmod +x $HOME/qbittorrent-nox
-        wget  qb_password_gen https://raw.githubusercontent.com/iniwex5/Seedbox-Components/main/Torrent%20Clients/qBittorrent/qb_password_gen_aarch64 && chmod +x $HOME/qb_password_gen
-    fi}
+        wget -O qb_password_gen https://raw.githubusercontent.com/iniwex5/Seedbox-Components/main/Torrent%20Clients/qBittorrent/qb_password_gen_aarch64 && chmod +x $HOME/qb_password_gen
+    fi
+}
 
 function qBittorrent_install {
     normal_2
