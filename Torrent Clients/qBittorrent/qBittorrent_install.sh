@@ -1,7 +1,7 @@
 function qBittorrent_download {
     ## Allow users to determine which version of qBittorrent to be installed
     need_input; echo "Please enter your choice (qBittorrent Version - libtorrent Version):"; normal_3
-    options=("qBittorrent 4.1.9 - libtorrent-1_1_14" "qBittorrent 4.1.9.1 - libtorrent-1_1_14" "qBittorrent 4.3.8 - libtorrent-v1.2.14" "qBittorrent 4.3.9 - libtorrent-v1.2.19" "qBittorrent 4.4.5 - libtorrent-v1.2.19" "qBittorrent 4.4.5 - libtorrent-v2.0.9" "qBittorrent 4.5.4 - libtorrent-v1.2.19" "qBittorrent 4.5.4 - libtorrent-v2.0.9" "qBittorrent 4.6.0beta1 - libtorrent-v1.2.19" "qBittorrent 4.6.0beta1 - libtorrent-v2.0.9")
+    options=("qBittorrent 4.1.9 - libtorrent-1_1_14" "qBittorrent 4.1.9.1 - libtorrent-1_1_14" "qBittorrent 4.3.8 - libtorrent-v1.2.14" "qBittorrent 4.3.9 - libtorrent-v1.2.19" "qBittorrent 4.4.5 - libtorrent-v1.2.19" "qBittorrent 4.4.5 - libtorrent-v2.0.9" "qBittorrent 4.5.4 - libtorrent-v1.2.19" "qBittorrent 4.5.4 - libtorrent-v2.0.9")
     select opt in "${options[@]}"
     do
         case $opt in
@@ -29,17 +29,16 @@ function qBittorrent_download {
             "qBittorrent 4.5.4 - libtorrent-v2.0.9")
                 qBver=4.5.4 && libver=libtorrent-v2.0.9; break
                 ;;
-            "qBittorrent 4.6.0beta1 - libtorrent-v1.2.19")
-                qBver=4.6.0beta1 && libver=libtorrent-v1.2.19; break
-                ;;
-            "qBittorrent 4.6.0beta1 - libtorrent-v2.0.9")
-                qBver=4.6.0beta1 && libver=libtorrent-v2.0.9; break
-                ;;
             *) warn_1; echo "Please choose a valid version"; normal_3;;
         esac
     done
-    wget https://raw.githubusercontent.com/jerry048/Seedbox-Components/main/Torrent%20Clients/qBittorrent/qBittorrent/qBittorrent%20$qBver%20-%20$libver/qbittorrent-nox && chmod +x $HOME/qbittorrent-nox
-}
+    if [[ $ARCH == x86_64 ]]; then
+        wget https://raw.githubusercontent.com/iniwex5/Seedbox-Components/main/Torrent%20Clients/qBittorrent/qBittorrent/qBittorrent%20$qBver%20-%20$libver/qbittorrent-nox && chmod +x $HOME/qbittorrent-nox
+        wget  https://raw.githubusercontent.com/iniwex5/Seedbox-Components/main/Torrent%20Clients/qBittorrent/qb_password_gen && chmod +x $HOME/qb_password_gen
+    elif [[ $ARCH == aarch64 ]]; then
+        wget -O qbittorrent-nox https://raw.githubusercontent.com/iniwex5/Seedbox-Components/main/Torrent%20Clients/qBittorrent/qBittorrent/qBittorrent%20$qBver%20-%20$libver/aarch64-qbittorrent-nox && chmod +x $HOME/qbittorrent-nox
+        wget  qb_password_gen https://raw.githubusercontent.com/iniwex5/Seedbox-Components/main/Torrent%20Clients/qBittorrent/qb_password_gen_aarch64 && chmod +x $HOME/qb_password_gen
+    fi}
 
 function qBittorrent_install {
     normal_2
@@ -117,14 +116,15 @@ WebUI\Port=8080
 WebUI\Username=$username
 EOF
     elif [[ "${qBver}" =~ "4.2."|"4.3." ]]; then
-        wget  https://raw.githubusercontent.com/jerry048/Seedbox-Components/main/Torrent%20Clients/qBittorrent/qb_password_gen && chmod +x $HOME/qb_password_gen
         PBKDF2password=$($HOME/qb_password_gen $password)
         cat << EOF >/home/$username/.config/qBittorrent/qBittorrent.conf
 [BitTorrent]
 Session\AsyncIOThreadsCount=$aio
+Session\MultiConnectionsPerIp=true
 Session\SendBufferLowWatermark=$low_buffer
 Session\SendBufferWatermark=$buffer
 Session\SendBufferWatermarkFactor=$buffer_factor
+Session\ValidateHTTPSTrackerCertificate=false
 
 [LegalNotice]
 Accepted=true
@@ -133,16 +133,25 @@ Accepted=true
 Cookies=@Invalid()
 
 [Preferences]
-Connection\PortRangeMin=45000
+Advanced\IgnoreLimitsLAN=true
+Advanced\RecheckOnCompletion=false
+Connection\PortRangeMin=23333
 Downloads\DiskWriteCacheSize=$Cache_qB
 Downloads\SavePath=/home/$username/qbittorrent/Downloads/
 Queueing\QueueingEnabled=false
+Bittorrent\MaxConnecs=-1
+Bittorrent\MaxConnecsPerTorrent=-1
+Bittorrent\MaxUploads=-1
+Bittorrent\MaxUploadsPerTorrent=-1
+Bittorrent\PeX=false
+Bittorrent\uTP_rate_limited=false
+General\Locale=zh
+WebUI\CSRFProtection=false
 WebUI\Password_PBKDF2="@ByteArray($PBKDF2password)"
 WebUI\Port=8080
 WebUI\Username=$username
 EOF
     elif [[ "${qBver}" =~ "4.4."|"4.5."|"4.6." ]]; then
-        wget  https://raw.githubusercontent.com/jerry048/Seedbox-Components/main/Torrent%20Clients/qBittorrent/qb_password_gen && chmod +x $HOME/qb_password_gen
         PBKDF2password=$($HOME/qb_password_gen $password)
         cat << EOF >/home/$username/.config/qBittorrent/qBittorrent.conf
 [Application]
