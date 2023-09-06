@@ -500,7 +500,7 @@ function Tweaked_BBR {
     echo "deb http://deb.debian.org/debian buster-backports main" | sudo tee -a /etc/apt/sources.list
     apt-get -qqy update && apt -qqyt buster-backports upgrade
     elif [[ $distro_codename = bullseye ]]; then
-    echo "deb http://deb.debian.org/debian bullseye-backports main" | sudo tee -a /etc/apt/sources.list
+    echo "deb [check-valid-until=no] https://snapshot.debian.org/archive/debian/20230829T151102Z bullseye-backports main" | sudo tee -a /etc/apt/sources.list
     apt-get -qqy update && apt -qqyt bullseye-backports upgrade
     fi
     wget https://raw.githubusercontent.com/iniwex5/Seedbox-Components/main/Miscellaneous/BBR/BBR.sh && chmod +x BBR.sh
