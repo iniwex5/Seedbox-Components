@@ -142,6 +142,7 @@ Advanced\RecheckOnCompletion=false
 Connection\PortRangeMin=23333
 Downloads\DiskWriteCacheSize=$Cache_qB
 Downloads\SavePath=/home/$username/qbittorrent/Downloads/
+Downloads\PreAllocation=false
 Queueing\QueueingEnabled=false
 Bittorrent\MaxConnecs=-1
 Bittorrent\MaxConnecsPerTorrent=-1
@@ -181,6 +182,7 @@ Cookies=@Invalid()
 WebUI\Password_PBKDF2="@ByteArray($PBKDF2password)"
 WebUI\Port=8080
 WebUI\Username=$username
+Downloads\PreAllocation=false
 EOF
     rm qb_password_gen
     fi
